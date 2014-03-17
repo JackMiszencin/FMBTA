@@ -51,10 +51,10 @@ describe Account, '#get_pass' do
 
 	it 'retrieves membership_required pass for citizen with correct id' do
 		c1 = create(:citizen, :ss_number => ss_number1)
-		c1 = create(:citizen, :ss_number => ss_number2)
+		c2 = create(:citizen, :ss_number => ss_number2)
 		i = create(:institution, :name => "Central School")
-		p = create(:institution_id => id.id, :membership_required => true, :payment_required => false)
-		me = create(:membership, :ss_number => ss_number1, :institution_id => i.id)
+		p = create(:pass_template, :institution_id => i.id, :membership_required => true, :payment_required => false)
+		me = create(:membership, :citizen_id => c1.id, :institution_id => i.id)
 		a = create(:account)
 		expect(a.get_pass(p, fake_cc, fake_cvc, ss_number1)).to eq true
 		expect(a.get_pass(p, fake_cc, fake_cvc, ss_number2)).to eq false
