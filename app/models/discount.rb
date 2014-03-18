@@ -4,4 +4,9 @@ class Discount < ActiveRecord::Base
 	def price
 		return (self.mode.price.to_f * self.markdown.to_f + self.constant.to_f)
 	end
+
+	def max_increment
+		return (self.mode.get_max_increment.to_f * self.markdown.to_f)
+	end
+
 end

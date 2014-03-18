@@ -186,6 +186,92 @@ describe Account, "#pay_fare during weekend" do
 
 end
 
+describe Account, '#checkin' do
+	it 'deducts price for weekday' do
+		set_week_time
+		intitialize_and_add_to_account(0.0, 100.0)
+		@mode = create(:mode, :base_price => 2.0)
+		@station = create(:station)
+		@station.modes << @mode
+		@account.checkin(@mode, @station)
+		expect(@account.value).to eq 98.0
+	end
+
+	it 'deducts price for weekend' do
+	end
+
+	it 'sets up first_contact' do
+		set_week_time
+		intitialize_and_add_to_account(0.0, 100.0)
+		@mode = create(:mode, :base_price => 2.0)
+		@station = create(:station)
+		@station.modes << @mode
+		@account.checkin(@mode, @station)
+		expect(@account.first_contact.mode).to eq @mode		
+		expect(@account.value).to eq 98.0		
+	end
+
+	it 'sets last_contact as nil' do
+		set_week_time
+		intitialize_and_add_to_account(0.0, 100.0)
+		@mode = create(:mode, :base_price => 2.0)
+		@station = create(:station)
+		@contact = create(:contact, :station_id => @station.id, :mode_id => @mode.id)
+		@account.last_contact = @contact
+		@station.modes << @mode
+		@account.checkin(@mode, @station)
+		expect(@account.last_contact).to eq nil		
+		expect(@account.value).to eq 98.0		
+	end
+
+	it 'charges maximum increment if no previous checkout' do
+		set_week_time
+		intitialize_and_add_to_account(0.0, 100.0)
+		@mode = create(:mode, :base_price => 2.0, :max_increment => 5.0, :require_checkout => true)
+		@station = create(:station)
+		@station.modes << @mode
+		@contact = create(:contact, :station_id => @station.id, :mode_id => @mode.id)
+		@account.first_contact = @contact
+		@account.checkin(@mode, @station)
+		expect(@account.first_contact.mode).to eq @mode		
+		expect(@account.value).to eq 93.0
+	end
+end
+
+describe Account, '#checkout' do
+	it 'pays increment on mode' do
+		set_week_time
+		intitialize_and_add_to_account(0.0, 100.0)
+		@mode = create(:mode, :base_price => 2.0, :max_increment => 5.0, :require_checkout => true)
+		@station = create(:station)
+		@station2 = create(:station, :name => "Davis")
+		@station.modes << @mode
+		@station2.modes << @mode
+		@account.checkin(@mode, @station)
+		expect(@account.value).to eq 98.0
+		@account.checkout(@mode, @station2) # THE INCREMENT PAID OUT ON CHECKOUT IS CURRENTLY SET TO A CONSTANT 1.0
+		expect(@account.first_contact.station).to eq @station		
+		expect(@account.value).to eq 97.0
+	end
+
+	it 'sets last_contact' do
+		set_week_time
+		intitialize_and_add_to_account(0.0, 100.0)
+		@mode = create(:mode, :base_price => 2.0, :max_increment => 5.0, :require_checkout => true)
+		@station = create(:station)
+		@station2 = create(:station)
+		@station.modes << @mode
+		@station2.modes << @mode
+		@contact = create(:contact, :station_id => @station.id, :mode_id => @mode.id)
+		@account.first_contact = @contact
+		@account.checkin(@mode, @station)
+		@account.checkout(@mode, @station2) # THE INCREMENT PAID OUT ON CHECKOUT IS CURRENTLY SET TO A CONSTANT 1.0
+		expect(@account.last_contact.station).to eq @station2
+		expect(@account.last_contact.mode).to eq @mode
+	end
+
+end
+
 def intitialize_and_add_to_account(initial, added)
 	@account = create(:account, :value => initial)
 	@account.add_value(added, @fake_cc, @fake_cvc)

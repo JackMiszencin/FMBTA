@@ -11,16 +11,18 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20140318110709) do
+ActiveRecord::Schema.define(version: 20140318130341) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
   create_table "accounts", force: true do |t|
     t.integer  "citizen_id"
-    t.decimal  "value",      precision: 14, scale: 2
+    t.decimal  "value",            precision: 14, scale: 2
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.integer  "first_contact_id"
+    t.integer  "last_contact_id"
   end
 
   create_table "citizens", force: true do |t|
@@ -34,6 +36,14 @@ ActiveRecord::Schema.define(version: 20140318110709) do
   end
 
   add_index "citizens", ["ss_number"], name: "index_citizens_on_ss_number", using: :btree
+
+  create_table "contacts", force: true do |t|
+    t.integer  "mode_id"
+    t.integer  "station_id"
+    t.boolean  "entry",      default: true
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
 
   create_table "discount_templates", force: true do |t|
     t.integer "pass_template_id"
@@ -62,7 +72,14 @@ ActiveRecord::Schema.define(version: 20140318110709) do
 
   create_table "modes", force: true do |t|
     t.string  "name"
-    t.decimal "base_price", precision: 14, scale: 2
+    t.decimal "base_price",       precision: 14, scale: 2
+    t.decimal "max_increment",    precision: 14, scale: 2
+    t.boolean "require_checkout",                          default: false
+  end
+
+  create_table "modes_stations", force: true do |t|
+    t.integer "station_id"
+    t.integer "mode_id"
   end
 
   create_table "pass_templates", force: true do |t|
@@ -82,6 +99,12 @@ ActiveRecord::Schema.define(version: 20140318110709) do
     t.datetime "created_at"
     t.datetime "updated_at"
     t.integer  "insitution_id"
+  end
+
+  create_table "stations", force: true do |t|
+    t.string   "name"
+    t.datetime "created_at"
+    t.datetime "updated_at"
   end
 
 end
