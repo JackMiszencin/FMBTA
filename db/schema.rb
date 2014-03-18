@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20140318093626) do
+ActiveRecord::Schema.define(version: 20140318110709) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -74,6 +74,7 @@ ActiveRecord::Schema.define(version: 20140318093626) do
     t.decimal "price",               precision: 14, scale: 2
     t.integer "min_age"
     t.integer "max_age"
+    t.boolean "prorated",                                     default: false
   end
 
   create_table "passes", force: true do |t|

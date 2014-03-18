@@ -32,7 +32,7 @@ class Account < ActiveRecord::Base
 			return false unless (self.citizen.date_of_birth >= (Date.today - pass_template.max_age.years))
 		end
 		if pass_template.payment_required
-			return false unless Merchant.purchase(pass_template.price, cc, cvc)
+			return false unless Merchant.purchase(pass_template.real_price, cc, cvc)
 		end
 		pass = self.passes.create
 		pass_template.discount_templates.each do |dt|
