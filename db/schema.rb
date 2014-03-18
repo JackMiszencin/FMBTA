@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20140317120710) do
+ActiveRecord::Schema.define(version: 20140318093626) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -30,7 +30,7 @@ ActiveRecord::Schema.define(version: 20140317120710) do
     t.string   "last_name"
     t.datetime "created_at"
     t.datetime "updated_at"
-    t.time     "date_of_birth"
+    t.date     "date_of_birth"
   end
 
   add_index "citizens", ["ss_number"], name: "index_citizens_on_ss_number", using: :btree
@@ -57,7 +57,7 @@ ActiveRecord::Schema.define(version: 20140317120710) do
   create_table "memberships", force: true do |t|
     t.integer "citizen_id"
     t.integer "institution_id"
-    t.time    "expiration"
+    t.date    "expiration"
   end
 
   create_table "modes", force: true do |t|
@@ -72,6 +72,8 @@ ActiveRecord::Schema.define(version: 20140317120710) do
     t.integer "term"
     t.string  "term_unit"
     t.decimal "price",               precision: 14, scale: 2
+    t.integer "min_age"
+    t.integer "max_age"
   end
 
   create_table "passes", force: true do |t|

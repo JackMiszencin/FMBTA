@@ -30,8 +30,6 @@ gem 'jbuilder', '~> 1.2'
 group :development, :test do
 	gem 'rspec-rails'
 	gem 'capybara', '1.1.4'
-	gem 'guard-spork'
-	gem 'spork-rails', git: 'http://github.com/railstutorial/spork-rails.git'
 	gem 'rb-fsevent', '~> 0.9.1'
 	gem 'jasminerice', :git => 'https://github.com/bradphelan/jasminerice.git'
 	gem 'guard-jasmine'

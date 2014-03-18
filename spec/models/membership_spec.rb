@@ -1,5 +1,5 @@
-future = Time.now + 3.weeks
-past = Time.now - 3.weeks
+future = (Date.today + 3.weeks)
+past = (Date.today - 3.weeks)
 
 describe Membership, "scope active" do
 	it 'returns both nil expirations and future expirations' do
