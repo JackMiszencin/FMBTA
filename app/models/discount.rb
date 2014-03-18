@@ -1,4 +1,5 @@
 class Discount < ActiveRecord::Base
+	# Stores information on potential discounts for modes of transit.
 	belongs_to :mode
 	belongs_to :pass
 	def price

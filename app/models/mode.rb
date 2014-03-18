@@ -1,4 +1,4 @@
-class Mode < ActiveRecord::Base
+class Mode < ActiveRecord::Base # A mode of transit, (i.e. subway, bus)
 	has_and_belongs_to_many :stations
 
 	def price

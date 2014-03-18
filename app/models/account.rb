@@ -2,6 +2,7 @@ class Account < ActiveRecord::Base
 	belongs_to :citizen
 	has_many :passes
 	has_many :discounts, :through => :passes
+	# Contacts are used for keeping track of taps into and out of transit modes.
 	belongs_to :first_contact, :class_name => "Contact"
 	belongs_to :last_contact, :class_name => "Contact"
 
@@ -57,7 +58,7 @@ class Account < ActiveRecord::Base
 		return self.update_attributes(:value => (self.value.to_f - price.to_f))
 	end
 
-	def checkin(mode, station)
+	def checkin(mode, station) # Tapping a card as one enters a station or bus
 		if self.last_contact.nil? && self.first_contact && self.first_contact.mode.require_checkout
 			return false unless self.pay_max_increment(mode)
 		end
@@ -65,7 +66,9 @@ class Account < ActiveRecord::Base
 		self.set_first_contact(mode, station)
 	end
 
-	def checkout(mode, station)
+	def checkout(mode, station) # Tapping a card as one leaves a station or bus.
+		# Not all modes of transport require a checkout. For these, a single flat rate is paid
+		# instead of one with increments for further station stops.
 		if self.first_contact && self.first_contact.station
 			return false unless pay_increment(mode, self.first_contact.station, station)
 		else
